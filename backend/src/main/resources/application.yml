@@ -16,3 +16,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework.security.authentication: DEBUG
+
+jwt:
+  secret: 4de254442b400013b9fe0fd3314f7e43b7e4a9bc0d99837ad8e057ebf31f0b86
+  expire: 86400000 # 24 hours (in milliseconds);
