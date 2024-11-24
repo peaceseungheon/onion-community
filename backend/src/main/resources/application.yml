@@ -24,5 +24,6 @@ logging:
     org.springframework.security.authentication: DEBUG
 
 jwt:
+  cookieName: onion_token
   secret: 4de254442b400013b9fe0fd3314f7e43b7e4a9bc0d99837ad8e057ebf31f0b86
   expire: 86400000 # 24 hours (in milliseconds);
