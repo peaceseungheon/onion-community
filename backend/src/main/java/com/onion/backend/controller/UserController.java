@@ -5,6 +5,8 @@ import com.onion.backend.dto.SignUpUser;
 import com.onion.backend.entity.User;
 import com.onion.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +45,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody SignInUser signInUser){
-        return ResponseEntity.ok(userService.login(signInUser));
+    public void  login(@RequestBody SignInUser signInUser, HttpServletResponse response){
+        String jwt = userService.login(signInUser);
+        Cookie cookie = new Cookie("onion_token", jwt);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60);
+        response.addCookie(cookie);
     }
 
     @GetMapping("/token/validation")
@@ -53,6 +61,16 @@ public class UserController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("onion_token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
 }
