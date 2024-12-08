@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody SignInUser signInUser, HttpServletResponse response) {
+    public ResponseEntity<String> login(@RequestBody SignInUser signInUser, HttpServletResponse response) {
         String jwt = userService.login(signInUser);
         Cookie cookie = new Cookie(jwtCookieName, jwt);
         cookie.setHttpOnly(true);
@@ -68,6 +68,8 @@ public class UserController {
         cookie.setPath("/");
         cookie.setMaxAge(jwtExpireTime);
         response.addCookie(cookie);
+
+        return ResponseEntity.ok(jwt);
     }
 
     @GetMapping("/token/validation")
