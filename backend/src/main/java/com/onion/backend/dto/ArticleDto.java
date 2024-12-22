@@ -1,7 +1,9 @@
 package com.onion.backend.dto;
 
 
+import com.onion.backend.entity.Article;
 import com.onion.backend.repository.article.projections.ArticleProjection;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +27,15 @@ public class ArticleDto {
         this.content = articleProjection.getContent();
         this.authorName = articleProjection.getAuthorName();
         this.createDate = articleProjection.getCreateDate();
+    }
+
+    public ArticleDto(Article article){
+        this.boardId = article.getBoard().getId();
+        this.articleId = article.getId();
+        this.title = article.getTitle();
+        this.content = article.getContent();
+        this.authorName = article.getAuthor().getName();
+        this.createDate = article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
 }

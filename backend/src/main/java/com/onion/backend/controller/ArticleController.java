@@ -2,6 +2,7 @@ package com.onion.backend.controller;
 
 import com.onion.backend.dto.ArticleCreateDto;
 import com.onion.backend.dto.ArticleDto;
+import com.onion.backend.dto.ArticleUpdateDto;
 import com.onion.backend.entity.Article;
 import com.onion.backend.entity.Board;
 import com.onion.backend.service.ArticleService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,6 +52,12 @@ public class ArticleController {
         }
 
         return ResponseEntity.ok(articleService.firstGetArticle(boardId));
+    }
+
+    @PutMapping("/{boardId}/articles/{articleId}")
+    public void updateArticle(@PathVariable("boardId") Long boardId, @PathVariable("articleId") Long articleId, @RequestBody
+        ArticleUpdateDto dto){
+        ResponseEntity.ok(articleService.updateArticle(boardId, articleId, dto));
     }
 
 }

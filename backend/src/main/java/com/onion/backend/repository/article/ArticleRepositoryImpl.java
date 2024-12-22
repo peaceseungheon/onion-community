@@ -6,9 +6,12 @@ import com.onion.backend.entity.Article;
 
 import static com.onion.backend.entity.QBoard.board;
 
+import com.onion.backend.entity.User;
+import com.onion.backend.exception.ResourceNotFoundException;
 import com.onion.backend.repository.article.projections.ArticleProjection;
 import com.querydsl.core.types.Projections;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
@@ -16,6 +19,15 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
 
     public ArticleRepositoryImpl() {
         super(Article.class);
+    }
+
+    @Override
+    public Article getByArticleId(Long articleId) {
+        return Optional.ofNullable(
+            from(article)
+                .where(article.id.eq(articleId))
+                .fetchOne()
+        ).orElseThrow(() -> new ResourceNotFoundException("게시글 정보를 조회하지 못했습니다."));
     }
 
     @Override
@@ -49,5 +61,21 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
             .where(board.id.eq(boardId), article.id.gt(firstId))
             .orderBy(article.createdAt.desc())
             .fetch();
+    }
+
+    @Override
+    public Article getLatestCreateArticleByAuthor(User user) {
+        return from(article)
+            .where(article.author.eq(user))
+            .orderBy(article.createdAt.desc())
+            .fetchOne();
+    }
+
+    @Override
+    public Article getLatestUpdateArticleByAuthor(User user) {
+        return from(article)
+            .where(article.author.eq(user))
+            .orderBy(article.updatedAt.desc())
+            .fetchOne();
     }
 }
