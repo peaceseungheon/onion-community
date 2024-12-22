@@ -7,4 +7,6 @@ public interface ArticleRepositoryCustom {
 
     List<ArticleProjection> fetchOrderByCreateDateDesc(Long boardId);
 
+    List<ArticleProjection> fetchArticleBefore(Long boardId, Long lastId);
+    List<ArticleProjection> fetchArticleAfter(Long boardId, Long firstId);
 }

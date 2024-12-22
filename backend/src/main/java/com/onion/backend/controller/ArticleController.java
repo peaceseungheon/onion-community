@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,17 +26,29 @@ public class ArticleController {
     private final BoardService boardService;
 
     @GetMapping
-    public ResponseEntity<List<Board>> fetchBoards(){
+    public ResponseEntity<List<Board>> fetchBoards() {
         return ResponseEntity.ok(boardService.fetchAllBoards());
     }
 
     @PostMapping("/{boardId}/articles")
-    public ResponseEntity<Article> writeArticle(@PathVariable("boardId") Long boardId, @RequestBody ArticleCreateDto request){
+    public ResponseEntity<Article> writeArticle(@PathVariable("boardId") Long boardId,
+        @RequestBody ArticleCreateDto request) {
         return ResponseEntity.ok(articleService.writeArticle(boardId, request));
     }
 
     @GetMapping("/{boardId}/articles")
-    public ResponseEntity<List<ArticleDto>> getArticles(@PathVariable("boardId") Long boardId){
+    public ResponseEntity<List<ArticleDto>> getArticles(@PathVariable("boardId") Long boardId,
+        @RequestParam(value = "lastId", required = false) Long lastId,
+        @RequestParam(value = "firstId", required = false) Long firstId) {
+
+        if(lastId != null){
+            return ResponseEntity.ok(articleService.getArticleBefore(boardId, lastId));
+        }
+
+        if(firstId != null){
+            return ResponseEntity.ok(articleService.getArticleAfter(boardId, firstId));
+        }
+
         return ResponseEntity.ok(articleService.firstGetArticle(boardId));
     }
 

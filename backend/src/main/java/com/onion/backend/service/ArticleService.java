@@ -57,4 +57,17 @@ public class ArticleService {
             .collect(Collectors.toList());
     }
 
+    public List<ArticleDto> getArticleBefore(Long boardId, Long lastId) {
+        return articleRepository.fetchArticleBefore(boardId, lastId)
+            .stream()
+            .map(ArticleDto::new)
+            .collect(Collectors.toList());
+    }
+
+    public List<ArticleDto> getArticleAfter(Long boardId, Long firstId) {
+        return articleRepository.fetchArticleAfter(boardId, firstId)
+            .stream()
+            .map(ArticleDto::new)
+            .collect(Collectors.toList());
+    }
 }
