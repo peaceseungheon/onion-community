@@ -4,6 +4,7 @@ import com.onion.backend.dto.SignInOut;
 import com.onion.backend.dto.SignInUser;
 import com.onion.backend.dto.SignUpUser;
 import com.onion.backend.entity.User;
+import com.onion.backend.exception.LoginFailException;
 import com.onion.backend.jwt.JwtUtils;
 import com.onion.backend.repository.UserRepository;
 import java.util.List;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,10 +44,14 @@ public class UserService {
     public SignInOut login(SignInUser signInUser) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
             signInUser.getUserId(), signInUser.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(token);
-        String jwt = jwtUtils.generateToken(authenticate.getName());
-        User user = userRepository.getByEmail(signInUser.getUserId());
-        return new SignInOut(jwt, user.getId(), user.getName());
+        try {
+            Authentication authenticate = authenticationManager.authenticate(token);
+            String jwt = jwtUtils.generateToken(authenticate.getName());
+            User user = userRepository.getByEmail(signInUser.getUserId());
+            return new SignInOut(jwt, user.getId(), user.getName());
+        }catch (AuthenticationException e){
+            throw new LoginFailException(e.getMessage());
+        }
     }
 
     public boolean validateToken(String token) {
