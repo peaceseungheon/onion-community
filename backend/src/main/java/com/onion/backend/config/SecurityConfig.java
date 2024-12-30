@@ -38,6 +38,7 @@ public class SecurityConfig {
                 // Swagger UI 및 API 문서 경로 허용
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/users/sign-up",
                     "/api/users/login", "/api/boards").permitAll()
+                .requestMatchers("/ws-stomp", "/app/hello").permitAll()
                 // 나머지 요청은 인증 필요
                 .anyRequest().authenticated()
             ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
