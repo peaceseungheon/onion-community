@@ -34,7 +34,8 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
     public List<ArticleProjection> fetchOrderByCreateDateDesc(Long boardId) {
         return from(article)
             .select(Projections.constructor(ArticleProjection.class, article.board.id, article.id,
-                article.title, article.content, article.author.name, article.createdAt))
+                article.title, article.content, article.author.name, article.author.id,
+                article.createdAt))
             .where(article.board.id.eq(boardId))
             .orderBy(article.createdAt.desc())
             .limit(10)
@@ -45,7 +46,8 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
     public List<ArticleProjection> fetchArticleBefore(Long boardId, Long lastId) {
         return from(article)
             .select(Projections.constructor(ArticleProjection.class, board.id, article.id,
-                article.title, article.content, article.author.name, article.createdAt))
+                article.title, article.content, article.author.name, article.author.id,
+                article.createdAt))
             .join(article.board, board)
             .where(board.id.eq(boardId), article.id.lt(lastId))
             .orderBy(article.createdAt.desc())
@@ -56,7 +58,8 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
     public List<ArticleProjection> fetchArticleAfter(Long boardId, Long firstId) {
         return from(article)
             .select(Projections.constructor(ArticleProjection.class, board.id, article.id,
-                article.title, article.content, article.author.name, article.createdAt))
+                article.title, article.content, article.author.name, article.author.id,
+                article.createdAt))
             .join(article.board, board)
             .where(board.id.eq(boardId), article.id.gt(firstId))
             .orderBy(article.createdAt.desc())

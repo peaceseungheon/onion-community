@@ -18,6 +18,7 @@ public class ArticleDto {
     private String title;
     private String content;
     private String authorName;
+    private Long authorNo;
     private String createDate;
 
     public ArticleDto(ArticleProjection articleProjection){
@@ -26,6 +27,7 @@ public class ArticleDto {
         this.title = articleProjection.getTitle();
         this.content = articleProjection.getContent();
         this.authorName = articleProjection.getAuthorName();
+        this.authorNo = articleProjection.getAuthorNo();
         this.createDate = articleProjection.getCreateDate();
     }
 
@@ -35,6 +37,7 @@ public class ArticleDto {
         this.title = article.getTitle();
         this.content = article.getContent();
         this.authorName = article.getAuthor().getName();
+        this.authorNo = article.getAuthor().getId();
         this.createDate = article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
