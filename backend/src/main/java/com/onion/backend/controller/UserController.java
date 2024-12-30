@@ -1,5 +1,6 @@
 package com.onion.backend.controller;
 
+import com.onion.backend.dto.SignInOut;
 import com.onion.backend.dto.SignInUser;
 import com.onion.backend.dto.SignUpUser;
 import com.onion.backend.entity.User;
@@ -60,16 +61,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody SignInUser signInUser, HttpServletResponse response) {
-        String jwt = userService.login(signInUser);
-        Cookie cookie = new Cookie(jwtCookieName, jwt);
+    public ResponseEntity<SignInOut> login(@RequestBody SignInUser signInUser, HttpServletResponse response) {
+        SignInOut signInOut = userService.login(signInUser);
+        Cookie cookie = new Cookie(jwtCookieName, signInOut.getJwt());
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setMaxAge(jwtExpireTime);
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok(signInOut);
     }
 
     @GetMapping("/token/validation")
