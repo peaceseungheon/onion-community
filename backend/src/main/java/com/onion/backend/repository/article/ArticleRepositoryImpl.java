@@ -71,6 +71,7 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
         return from(article)
             .where(article.author.eq(user))
             .orderBy(article.createdAt.desc())
+            .limit(1)
             .fetchOne();
     }
 
@@ -79,6 +80,7 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
         return from(article)
             .where(article.author.eq(user))
             .orderBy(article.updatedAt.desc())
+            .limit(1)
             .fetchOne();
     }
 }

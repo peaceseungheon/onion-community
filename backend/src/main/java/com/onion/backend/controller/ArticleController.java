@@ -3,13 +3,13 @@ package com.onion.backend.controller;
 import com.onion.backend.dto.ArticleCreateDto;
 import com.onion.backend.dto.ArticleDto;
 import com.onion.backend.dto.ArticleUpdateDto;
-import com.onion.backend.entity.Article;
 import com.onion.backend.entity.Board;
 import com.onion.backend.service.ArticleService;
 import com.onion.backend.service.BoardService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +33,7 @@ public class ArticleController {
     }
 
     @PostMapping("/{boardId}/articles")
-    public ResponseEntity<Article> writeArticle(@PathVariable("boardId") Long boardId,
+    public ResponseEntity<ArticleDto> writeArticle(@PathVariable("boardId") Long boardId,
         @RequestBody ArticleCreateDto request) {
         return ResponseEntity.ok(articleService.writeArticle(boardId, request));
     }
@@ -43,11 +43,11 @@ public class ArticleController {
         @RequestParam(value = "lastId", required = false) Long lastId,
         @RequestParam(value = "firstId", required = false) Long firstId) {
 
-        if(lastId != null){
+        if (lastId != null) {
             return ResponseEntity.ok(articleService.getArticleBefore(boardId, lastId));
         }
 
-        if(firstId != null){
+        if (firstId != null) {
             return ResponseEntity.ok(articleService.getArticleAfter(boardId, firstId));
         }
 
@@ -55,9 +55,17 @@ public class ArticleController {
     }
 
     @PutMapping("/{boardId}/articles/{articleId}")
-    public void updateArticle(@PathVariable("boardId") Long boardId, @PathVariable("articleId") Long articleId, @RequestBody
-        ArticleUpdateDto dto){
+    public void updateArticle(@PathVariable("boardId") Long boardId,
+        @PathVariable("articleId") Long articleId, @RequestBody
+        ArticleUpdateDto dto) {
         ResponseEntity.ok(articleService.updateArticle(boardId, articleId, dto));
+    }
+
+    @DeleteMapping("/{boardId}/articles/{articleId}")
+    public ResponseEntity<Void> deleteArticle(@PathVariable("boardId") Long boardId,
+        @PathVariable("articleId") Long articleId) {
+        articleService.deleteArticle(boardId, articleId);
+        return ResponseEntity.ok().build();
     }
 
 }

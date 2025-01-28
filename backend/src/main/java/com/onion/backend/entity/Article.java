@@ -44,4 +44,15 @@ public class Article extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Board board;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
+    public boolean isAuthor(String email){
+        return this.getAuthor().getEmail().equals(email);
+    }
+
+    public void delete(){
+        this.isDeleted = true;
+    }
+
 }
