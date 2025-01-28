@@ -1,5 +1,6 @@
 package com.onion.backend.handler;
 
+import com.onion.backend.exception.LoginFailException;
 import com.onion.backend.exception.NotAllowedException;
 import com.onion.backend.exception.RateLimitException;
 import com.onion.backend.exception.ResourceNotFoundException;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RateLimitException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String handleRateLimitException(RateLimitException ex){
+        return ex.getMessage();
+    }
+
+    @ExceptionHandler(LoginFailException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleLoginFailException(LoginFailException ex) {
         return ex.getMessage();
     }
 
