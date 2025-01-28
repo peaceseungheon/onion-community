@@ -36,7 +36,7 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
             .select(Projections.constructor(ArticleProjection.class, article.board.id, article.id,
                 article.title, article.content, article.author.name, article.author.id,
                 article.createdAt))
-            .where(article.board.id.eq(boardId))
+            .where(article.board.id.eq(boardId), article.isDeleted.isFalse())
             .orderBy(article.createdAt.desc())
             .limit(10)
             .fetch();
@@ -49,7 +49,7 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
                 article.title, article.content, article.author.name, article.author.id,
                 article.createdAt))
             .join(article.board, board)
-            .where(board.id.eq(boardId), article.id.lt(lastId))
+            .where(board.id.eq(boardId), article.id.lt(lastId), article.isDeleted.isFalse())
             .orderBy(article.createdAt.desc())
             .fetch();
     }
@@ -61,7 +61,7 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
                 article.title, article.content, article.author.name, article.author.id,
                 article.createdAt))
             .join(article.board, board)
-            .where(board.id.eq(boardId), article.id.gt(firstId))
+            .where(board.id.eq(boardId), article.id.gt(firstId), article.isDeleted.isFalse())
             .orderBy(article.createdAt.desc())
             .fetch();
     }
