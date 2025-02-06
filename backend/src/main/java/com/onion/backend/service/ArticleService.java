@@ -1,6 +1,5 @@
 package com.onion.backend.service;
 
-import com.onion.backend.controller.ArticleValidateService;
 import com.onion.backend.dto.ArticleCreateDto;
 import com.onion.backend.dto.ArticleDto;
 import com.onion.backend.dto.ArticleUpdateDto;
@@ -14,7 +13,6 @@ import com.onion.backend.repository.BoardRepository;
 import com.onion.backend.repository.UserRepository;
 import com.onion.backend.repository.article.ArticleRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,7 +82,7 @@ public class ArticleService {
     }
 
     public ArticleDto updateArticle(Long boardId, Long articleId, ArticleUpdateDto dto) {
-        if(!articleValidateService.isCanUpdate()){
+        if(!articleValidateService.isCanUpdate(5)){
             throw new RateLimitException("수정하려면 시간이 더 지나야 합니다.");
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -99,7 +97,7 @@ public class ArticleService {
     }
 
     public void deleteArticle(Long boardId, Long articleId) {
-        if(!articleValidateService.isCanUpdate()){
+        if(!articleValidateService.isCanUpdate(5)){
             throw new RateLimitException("수정하려면 시간이 더 지나야 합니다.");
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
