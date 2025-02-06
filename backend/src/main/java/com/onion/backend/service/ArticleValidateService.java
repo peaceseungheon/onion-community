@@ -1,4 +1,4 @@
-package com.onion.backend.controller;
+package com.onion.backend.service;
 
 import com.onion.backend.entity.Article;
 import com.onion.backend.entity.User;
@@ -38,7 +38,7 @@ public class ArticleValidateService {
         return now.isAfter(article.getCreatedAt().plusMinutes(5));
     }
 
-    public boolean isCanUpdate() {
+    public boolean isCanUpdate(long minute) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = (String) authentication.getPrincipal();
 
@@ -49,7 +49,7 @@ public class ArticleValidateService {
 
         Article article = articleRepository.getLatestUpdateArticleByAuthor(opUser.get());
         LocalDateTime now = LocalDateTime.now();
-        return now.isAfter(article.getUpdatedAt().plusMinutes(5));
+        return now.isAfter(article.getUpdatedAt().plusMinutes(minute));
     }
 
 }
