@@ -32,7 +32,7 @@ public class ArticleService {
     private final ArticleValidateService articleValidateService;
 
     public ArticleDto writeArticle(Long boardId, ArticleCreateDto request) {
-        if(!articleValidateService.isCanWrite()){
+        if(!articleValidateService.isCanWrite(5)){
             throw new RateLimitException("글을 작성하려면 더 시간이 지나야 합니다.");
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

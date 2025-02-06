@@ -19,7 +19,7 @@ public class ArticleValidateService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
 
-    public boolean isCanWrite() {
+    public boolean isCanWrite(long minute) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = (String) authentication.getPrincipal();
 
@@ -35,7 +35,7 @@ public class ArticleValidateService {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        return now.isAfter(article.getCreatedAt().plusMinutes(5));
+        return now.isAfter(article.getCreatedAt().plusMinutes(minute));
     }
 
     public boolean isCanUpdate(long minute) {
