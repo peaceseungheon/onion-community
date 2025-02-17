@@ -15,8 +15,10 @@ import com.onion.backend.repository.article.ArticleRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
     private final ArticleValidateService articleValidateService;
+    private final BoardService boardService;
 
     public ArticleDto writeArticle(Long boardId, ArticleCreateDto request) {
         if(!articleValidateService.isCanWrite(5)){
@@ -107,5 +110,17 @@ public class ArticleService {
             throw new NotAllowedException("수정은 작성자만 가능합니다.");
         }
         article.delete();
+    }
+
+    @Async
+    public CompletableFuture<Article> getArticle(Long boardId, Long articleId){
+        if(!boardService.existBoard(boardId)){
+            throw new ResourceNotFoundException("게시판이 존재하지 않습니다.");
+        }
+        Article article = articleRepository.getByArticleId(articleId);
+        if(article.getIsDeleted()){
+            throw new ResourceNotFoundException("삭제된 게시글 입니다.");
+        }
+        return CompletableFuture.completedFuture(article);
     }
 }

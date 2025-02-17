@@ -6,7 +6,9 @@ import com.onion.backend.dto.ArticleUpdateDto;
 import com.onion.backend.entity.Board;
 import com.onion.backend.service.ArticleService;
 import com.onion.backend.service.BoardService;
+import com.onion.backend.service.CommentService;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +28,7 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping
     public ResponseEntity<List<Board>> fetchBoards() {
@@ -66,6 +69,15 @@ public class ArticleController {
         @PathVariable("articleId") Long articleId) {
         articleService.deleteArticle(boardId, articleId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{boardId}/articles/{articleId}")
+    public ResponseEntity<ArticleDto> getArticle(@PathVariable("boardId") Long boardId,
+        @PathVariable("articleId") Long articleId){
+       /* CompletableFuture<ArticleDto> articleWithComments = commentService
+            .getArticleWithComments(boardId, articleId);
+        return ResponseEntity.ok(articleWithComments.join());*/
+        return ResponseEntity.ok(commentService.getArticle(boardId, articleId));
     }
 
 }
