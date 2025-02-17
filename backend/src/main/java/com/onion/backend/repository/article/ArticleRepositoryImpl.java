@@ -25,7 +25,7 @@ public class ArticleRepositoryImpl extends QuerydslRepositorySupport implements
     public Article getByArticleId(Long articleId) {
         return Optional.ofNullable(
             from(article)
-                .where(article.id.eq(articleId))
+                .where(article.id.eq(articleId), article.isDeleted.isFalse())
                 .fetchOne()
         ).orElseThrow(() -> new ResourceNotFoundException("게시글 정보를 조회하지 못했습니다."));
     }
