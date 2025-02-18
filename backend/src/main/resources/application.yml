@@ -4,7 +4,7 @@ spring:
     username: onion-user
     password: onion1!
     driverClassName: com.mysql.cj.jdbc.Driver
-히    hikari:
+    hikari:
       maximum-pool-size: 10
       connection-timeout: 5000
       connection-init-sql: SELECT 1
