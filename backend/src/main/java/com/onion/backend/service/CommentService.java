@@ -83,28 +83,14 @@ public class CommentService {
 
     @Transactional
     public CommentOut editComment(Long articleId, CommentIn commentIn) {
-        Article article = articleRepository.getByArticleId(articleId);
-        if (article.getIsDeleted()) {
-            throw new ForbiddenException("게시글이 삭제되었습니다.");
-        }
-        User user = userRepository.getByEmail(authenticationService.getAuthUserEmail());
-        if(!commentValidateService.isCanUpdate(1)){
-            throw new RateLimitException("1분 후에 댓글 수정이 가능합니다.");
-        }
-
-        Optional<Comment> opComment = commentRepository.findById(commentIn.getCommentId());
-        if(opComment.isEmpty()){
-            throw new ResourceNotFoundException("댓글 정보가 존재하지 않습니다.");
-        }
-        Comment comment = opComment.get();
-        if(comment.getIsDeleted()){
-            throw new ForbiddenException("삭제된 댓글입니다.");
-        }
-        if(!comment.getUser().getId().equals(user.getId())){
-            throw new ForbiddenException("댓글 작성자만 수정 가능합니다.");
-        }
-
+        Comment comment = commentValidateService.validation(articleId, commentIn.getCommentId());
         comment.edit(commentIn.getContent());
         return new CommentOut(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long articleId, Long commentId) {
+        Comment comment = commentValidateService.validation(articleId, commentId);
+        comment.delete();
     }
 }
