@@ -8,14 +8,15 @@ import com.onion.backend.entity.Comment;
 import com.onion.backend.entity.User;
 import com.onion.backend.exception.ForbiddenException;
 import com.onion.backend.exception.RateLimitException;
+import com.onion.backend.exception.ResourceNotFoundException;
 import com.onion.backend.repository.UserRepository;
 import com.onion.backend.repository.article.ArticleRepository;
 import com.onion.backend.repository.comment.CommentRepository;
 import com.onion.backend.security.AuthenticationService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,4 +81,30 @@ public class CommentService {
         return new ArticleDto(article, comments);
     }
 
+    @Transactional
+    public CommentOut editComment(Long articleId, CommentIn commentIn) {
+        Article article = articleRepository.getByArticleId(articleId);
+        if (article.getIsDeleted()) {
+            throw new ForbiddenException("게시글이 삭제되었습니다.");
+        }
+        User user = userRepository.getByEmail(authenticationService.getAuthUserEmail());
+        if(!commentValidateService.isCanUpdate(1)){
+            throw new RateLimitException("1분 후에 댓글 수정이 가능합니다.");
+        }
+
+        Optional<Comment> opComment = commentRepository.findById(commentIn.getCommentId());
+        if(opComment.isEmpty()){
+            throw new ResourceNotFoundException("댓글 정보가 존재하지 않습니다.");
+        }
+        Comment comment = opComment.get();
+        if(comment.getIsDeleted()){
+            throw new ForbiddenException("삭제된 댓글입니다.");
+        }
+        if(!comment.getUser().getId().equals(user.getId())){
+            throw new ForbiddenException("댓글 작성자만 수정 가능합니다.");
+        }
+
+        comment.edit(commentIn.getContent());
+        return new CommentOut(comment);
+    }
 }

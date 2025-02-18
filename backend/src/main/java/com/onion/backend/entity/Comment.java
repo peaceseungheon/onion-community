@@ -42,4 +42,7 @@ public class Comment extends BaseEntity{
     @Column(nullable = false)
     private Boolean isDeleted;
 
+    public void edit(String content){
+        this.content = content;
+    }
 }
