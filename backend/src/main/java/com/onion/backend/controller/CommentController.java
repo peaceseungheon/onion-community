@@ -5,6 +5,7 @@ import com.onion.backend.dto.CommentOut;
 import com.onion.backend.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +32,15 @@ public class CommentController {
         @PathVariable("articleId") Long articleId,
         @RequestBody CommentIn commentIn) {
         return ResponseEntity.ok(commentService.editComment(articleId, commentIn));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public void deleteComment(
+        @PathVariable("boardId") Long boardId,
+        @PathVariable("articleId") Long articleId,
+        @PathVariable("commentId") Long commentId
+    ){
+       commentService.deleteComment(articleId, commentId);
     }
 
 }
